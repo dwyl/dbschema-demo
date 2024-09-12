@@ -42,6 +42,8 @@ jobs:
       run: |
         sudo systemctl start postgresql.service
         
+    - run: ps -ef | grep postgres
+        
     - name: Create database
       run: |
         PGPASSWORD=${{ env.PG_PWD }} psql -U ${{ env.PG_USER }} -tc 'CREATE DATABASE ${{ env.DATABASE_NAME }};'
