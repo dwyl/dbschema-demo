@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     env:
-      PG_USER: root
-      PG_PWD: root
-      DATABASE_NAME: testdb
+      PG_USER: postgres
+      PG_PWD: postgres
+      PG_DB_NAME: testdb
       SQL_SCRIPT_PATH: ./12_tables.sql
       GROOVY_SCRIPT: example_script.groovy
 
@@ -21,7 +21,7 @@ jobs:
         env:
           POSTGRES_USER: ${{ env.PG_USER }}
           POSTGRES_PASSWORD: ${{ env.PG_PWD }}
-          POSTGRES_DB: ${{ env.DATABASE_NAME }}
+          POSTGRES_DB: ${{ env.PG_DB_NAME }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -42,11 +42,13 @@ jobs:
       run: |
         sudo systemctl start postgresql.service
         
-    - run: ps -ef | grep postgres
-        
-    - name: Create database
-      run: |
-        PGPASSWORD=${{ env.PG_PWD }} psql -U ${{ env.PG_USER }} -tc 'CREATE DATABASE ${{ env.DATABASE_NAME }};'
+    - run: # queries database with postgres client
+    - name: Query database
+      run: psql -h postgres -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -c 'SELECT 1;'
+      env:
+        # postgress password is required; alternatively, you can run:
+        PGPASSWORD: ${{ env.PG_PWD }}
+
 
     - name: Run SQL script
       run: |
