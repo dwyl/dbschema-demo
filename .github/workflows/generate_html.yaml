@@ -43,9 +43,8 @@ jobs:
         sudo systemctl start postgresql.service
         
     - name: Query database
-      run: psql -h postgres -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -c 'SELECT 1;'
+      run: psql -h localhost -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -c 'SELECT 1;'
       env:
-        # postgress password is required; alternatively, you can run:
         PGPASSWORD: ${{ env.PG_PWD }}
 
 
