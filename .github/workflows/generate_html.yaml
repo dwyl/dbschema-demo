@@ -42,15 +42,10 @@ jobs:
       run: |
         sudo systemctl start postgresql.service
         
-    - name: Query database
-      run: psql -h localhost -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -c 'SELECT 1;'
+    - name: Run SQL script
+      run: psql -h localhost -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -f ${{ env.SQL_SCRIPT_PATH }}'
       env:
         PGPASSWORD: ${{ env.PG_PWD }}
-
-
-    - name: Run SQL script
-      run: |
-        PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f $SQL_SCRIPT_PATH
 
     - name: Install Make
       run: sudo apt-get install -y make
