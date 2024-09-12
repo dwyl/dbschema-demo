@@ -9,7 +9,7 @@ DBSCHEMA_TAR = dbschema_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz
 DBSCHEMA_URL = https://www.dbschema.com/download/DbSchema_unix_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz
 
 # Default target
-all: download extract build
+all: download extract
 
 # Download thesudo make DbSchema tar.gz file if it doesn't exist
 download:
