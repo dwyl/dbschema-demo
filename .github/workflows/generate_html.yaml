@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     env:
+      PG_USER: postgres
+      PG_PWD: postgres
       DATABASE_NAME: testdb
       SQL_SCRIPT_PATH: ./12_tables.sql
       GROOVY_SCRIPT: example_script.groovy
@@ -17,8 +19,8 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: ${{ env.PG_USER }}
+          POSTGRES_PASSWORD: ${{ env.PG_PWD }}
           POSTGRES_DB: ${{ env.DATABASE_NAME }}
         # Set health checks to wait until postgres has started
         options: >-
@@ -42,7 +44,7 @@ jobs:
         
     - name: Create database
       run: |
-        psql postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@localhost:5432 -c "CREATE DATABASE $DATABASE_NAME;"
+        PGPASSWORD=${{ env.PG_USER }} psql -U postgres -tc "SELECT 'CREATE DATABASE ${{ env.DATABASE_NAME }};'"
 
     - name: Run SQL script
       run: |
