@@ -17,8 +17,8 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: 
+          POSTGRES_PASSWORD: 
           POSTGRES_DB: ${{ env.DATABASE_NAME }}
         # Set health checks to wait until postgres has started
         options: >-
