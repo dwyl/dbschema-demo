@@ -42,7 +42,6 @@ jobs:
       run: |
         sudo systemctl start postgresql.service
         
-    - run: # queries database with postgres client
     - name: Query database
       run: psql -h postgres -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -c 'SELECT 1;'
       env:
