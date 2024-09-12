@@ -42,7 +42,7 @@ jobs:
         
     - name: Create database
       run: |
-        PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE $DATABASE_NAME;"
+        psql postgresql://postgres:${{ env.POSTGRES_PASSWORD }}@localhost:5432 -c "CREATE DATABASE $DATABASE_NAME;"
 
     - name: Run SQL script
       run: |
