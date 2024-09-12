@@ -44,7 +44,7 @@ jobs:
         
     - name: Create database
       run: |
-        PGPASSWORD=${{ env.PG_USER }} psql -U postgres -tc 'CREATE DATABASE ${{ env.DATABASE_NAME }};'
+        PGPASSWORD=${{ env.PG_PWD }} psql -U ${{ env.PG_USER }} -tc 'CREATE DATABASE ${{ env.DATABASE_NAME }};'
 
     - name: Run SQL script
       run: |
