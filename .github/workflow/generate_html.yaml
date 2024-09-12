@@ -8,6 +8,7 @@ jobs:
 
     env:
       DATABASE_NAME: testdb
+      SQL_SCRIPT_PATH: ./12_tables.sql
 
     services:
       postgres:
@@ -44,7 +45,7 @@ jobs:
 
     - name: Run SQL script
       run: |
-        psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f ./path/to/your_script.sql
+        psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f $SQL_SCRIPT_PATH
 
     - name: List tables
       run: |
