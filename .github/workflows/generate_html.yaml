@@ -1,0 +1,77 @@
+name: DbSchema Workflow
+
+on: [push]
+
+jobs:
+  dbschema-job:
+    runs-on: ubuntu-22.04
+
+    env:
+      DATABASE_NAME: testdb
+      SQL_SCRIPT_PATH: ./12_tables.sql
+      GROOVY_SCRIPT: example_script.groovy
+
+    services:
+      postgres:
+        image: postgres:14
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.DATABASE_NAME }}
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up PostgreSQL client
+      run: sudo apt-get install -y postgresql-client
+
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        until pg_isready -h localhost -p 5432 -U postgres; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 1
+        done
+
+    - name: Create database
+      run: |
+        psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE $DATABASE_NAME;"
+
+    - name: Run SQL script
+      run: |
+        psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f $SQL_SCRIPT_PATH
+
+    - name: Install Make
+      run: sudo apt-get install -y make
+
+    - name: Run Makefile
+      run: make
+
+    - name: Build Docker image for DbSchema
+      run: |
+        docker build -t dbschema-image:latest .
+
+    - name: Run DbSchema in headless mode
+      run: |
+        docker run --rm -v $(pwd):/workspace dbschema-image:latest \
+          java -Djava.awt.headless=true \
+               -Dglass.platform=Monocle \
+               -Dmonocle.platform=Headless \
+               -Dprism.order=sw \
+               -Dprism.verbose=true \
+               -Djavafx.platform=monocle \
+               --module-path /opt/javafx-sdk-17.0.2/lib \
+               --add-modules javafx.controls,javafx.base,javafx.graphics,javafx.swing \
+               --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED \
+               --add-exports javafx.graphics/com.sun.javafx.util=ALL-UNNAMED \
+               --add-exports javafx.graphics/com.sun.javafx.logging=ALL-UNNAMED \
+               --add-exports javafx.base/com.sun.javafx.logging=ALL-UNNAMED \
+               -cp /workspace/app/lib/*:/opt/javafx-sdk-17.0.2/lib/openjfx-monocle-17.0.10.jar \
+               com.wisecoders.dbs.DbSchema -x /workspace/$GROOVY_SCRIPT
