@@ -17,8 +17,8 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_USER: 
-          POSTGRES_PASSWORD: 
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: ${{ env.DATABASE_NAME }}
         # Set health checks to wait until postgres has started
         options: >-
@@ -42,11 +42,11 @@ jobs:
         
     - name: Create database
       run: |
-        psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE $DATABASE_NAME;"
+        PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE $DATABASE_NAME;"
 
     - name: Run SQL script
       run: |
-        psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f $SQL_SCRIPT_PATH
+        PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -p 5432 -U postgres -d $DATABASE_NAME -f $SQL_SCRIPT_PATH
 
     - name: Install Make
       run: sudo apt-get install -y make
