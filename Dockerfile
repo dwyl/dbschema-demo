@@ -36,5 +36,21 @@ WORKDIR $HOME
 # Copy an example Groovy script
 COPY example_script.groovy $HOME/example_script.groovy
 
-# Set the entry point to run DbSchema in headless mode with the example script
-ENTRYPOINT ["java", "-Djava.awt.headless=true", "-Dglass.platform=Monocle", "-Dmonocle.platform=Headless", "-Dprism.order=sw", "-Dprism.verbose=true", "-Djavafx.platform=monocle", "--module-path", "/opt/javafx-sdk-17.0.2/lib", "--add-modules", "javafx.controls,javafx.base,javafx.graphics,javafx.swing", "--add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED", "--add-exports=javafx.graphics/com.sun.javafx.util=ALL-UNNAMED", "--add-exports=javafx.graphics/com.sun.javafx.logging=ALL-UNNAMED", "--add-exports=javafx.base/com.sun.javafx.logging=ALL-UNNAMED", "-cp", "./app/lib/*:/opt/javafx-sdk-17.0.2/lib/openjfx-monocle-17.0.10.jar", "com.wisecoders.dbs.DbSchema", "-x", "./example_script.groovy"]
+# Create the script that runs DbSchema and propagates the exit code
+RUN echo '#!/bin/sh\n' \
+    'set -e\n' \
+    'java -Djava.awt.headless=true -Dglass.platform=Monocle -Dmonocle.platform=Headless -Dprism.order=sw -Dprism.verbose=true -Djavafx.platform=monocle --module-path /opt/javafx-sdk-17.0.2/lib --add-modules javafx.controls,javafx.base,javafx.graphics,javafx.swing --add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED --add-exports=javafx.graphics/com.sun.javafx.util=ALL-UNNAMED --add-exports=javafx.graphics/com.sun.javafx.logging=ALL-UNNAMED --add-exports=javafx.base/com.sun.javafx.logging=ALL-UNNAMED -cp ./app/lib/*:/opt/javafx-sdk-17.0.2/lib/openjfx-monocle-17.0.10.jar com.wisecoders.dbs.DbSchema -x ./example_script.groovy\n' \
+    'EXIT_CODE=$?\n' \
+    'if [ $EXIT_CODE -ne 0 ]; then\n' \
+    '  echo "Script execution failed with exit code $EXIT_CODE."\n' \
+    '  exit $EXIT_CODE\n' \
+    'else\n' \
+    '  echo "Script executed successfully."\n' \
+    '  exit 0\n' \
+    'fi' > /home/dbschema/run_dbschema.sh
+
+# Make the script executable
+RUN chmod +x /home/dbschema/run_dbschema.sh
+
+# Modify the entry point to use the shell script
+ENTRYPOINT ["sh", "/home/dbschema/run_dbschema.sh"]
