@@ -5,7 +5,7 @@ try {
     Project proj = new Project("sample", "SqlServer");
     println "Project " + proj.getName()
     // CONNECT TO A LOCAL INSTALLED SQLSERVER, DATABASE 'hr' AS USER sa
-    Connector con = ConnectorManager.createConnector("pg_con", "localhost" 5432, "org.postgresql.Driver", "postgres", "postgres")
+    Connector con = ConnectorManager.createConnector("pg_con", "localhost", 5432, "org.postgresql.Driver", "postgres", "postgres")
     // HERE SPECIFY THE CONNECTION PASSWORD
     con.setPassword("postgres")
     // Sample connection using the JDBC URL
