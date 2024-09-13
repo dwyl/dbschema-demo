@@ -9,8 +9,9 @@ RUN wget https://download2.gluonhq.com/openjfx/17.0.2/openjfx-17.0.2_linux-x64_b
     unzip /tmp/openjfx.zip -d /opt && \
     rm /tmp/openjfx.zip
 
-# Set JavaFX environment variable for library path
+# Set JavaFX environment variable for library path and copy Monocle jar to JavaFX lib directory
 ENV PATH_TO_FX=/opt/javafx-sdk-17.0.2/lib
+COPY openjfx-monocle-17.0.10.jar /opt/javafx-sdk-17.0.2/lib/
 
 # Set environment variables for DbSchema
 ENV HOME=/home/dbschema
@@ -21,11 +22,8 @@ RUN useradd --create-home --home-dir "$HOME" "$USER"
 
 # Copy DbSchema files to the container
 COPY DbSchema $HOME/app
-COPY openjfx-monocle-17.0.10.jar $HOME/dbs/lib/openjfx-monocle-17.0.10.jar
+COPY openjfx-monocle-17.0.10.jar $HOME/app/lib/openjfx-monocle-17.0.10.jar
 RUN chown -R "$USER:$USER" "$HOME/app"
-
-# Copy Monocle jar to JavaFX lib directory
-RUN cp $HOME/dbs/lib/openjfx-monocle-17.0.10.jar /opt/javafx-sdk-17.0.2/lib/
 
 # Switch to non-root user
 USER $USER
