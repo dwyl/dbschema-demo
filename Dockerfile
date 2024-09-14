@@ -25,9 +25,13 @@ COPY DbSchema $HOME/app
 COPY openjfx-monocle-17.0.10.jar $HOME/app/lib/openjfx-monocle-17.0.10.jar
 RUN chown -R "$USER:$USER" "$HOME/app"
 
-# Copy drivers to `.DbSchema` directory
+# Copy drivers to `.DbSchema` directory (assuming the user is "dbschema")
 RUN mkdir -p "$HOME/.DbSchema"
 COPY DbSchema/drivers $HOME/.DbSchema/drivers/
+
+# Copy drivers to `.DbSchema` directory (per docs)
+RUN mkdir -p /home/users/.DbSchema/drivers/
+COPY DbSchema/drivers /home/users/.DbSchema/drivers/
 
 # Switch to non-root user
 USER $USER
