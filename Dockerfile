@@ -33,6 +33,10 @@ COPY DbSchema/drivers $HOME/.DbSchema/drivers/
 RUN mkdir -p /home/users/.DbSchema/drivers/
 COPY DbSchema/drivers /home/users/.DbSchema/drivers/
 
+# Copy drivers to `.DbSchema` directory (another directory)
+RUN mkdir -p .DbSchema/drivers/
+COPY DbSchema/drivers .DbSchema/drivers/
+
 # Switch to non-root user
 USER $USER
 
