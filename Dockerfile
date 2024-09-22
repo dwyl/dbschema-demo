@@ -26,16 +26,9 @@ COPY openjfx-monocle-17.0.10.jar $HOME/app/lib/openjfx-monocle-17.0.10.jar
 RUN chown -R "$USER:$USER" "$HOME/app"
 
 # Copy drivers to `.DbSchema` directory (assuming the user is "dbschema")
-RUN mkdir -p "$HOME/.DbSchema"
-COPY DbSchema/drivers $HOME/.DbSchema/drivers/
-
-# Copy drivers to `.DbSchema` directory (per docs)
-RUN mkdir -p /home/users/.DbSchema/drivers/
-COPY DbSchema/drivers /home/users/.DbSchema/drivers/
-
-# Copy drivers to `.DbSchema` directory (another directory)
-RUN mkdir -p .DbSchema/drivers/
-COPY DbSchema/drivers .DbSchema/drivers/
+RUN mkdir -p /home/dbschema/.DbSchema/drivers/PostgreSQL
+RUN wget dbschema.com/jdbc-drivers/PostgreSQLJdbcDriver.zip -O /home/dbschema/.DbSchema/drivers/PostgreSQL/PostgreSQLJdbcDriver.zip && \
+    unzip /home/dbschema/.DbSchema/drivers/PostgreSQL/PostgreSQLJdbcDriver.zip
 
 # Switch to non-root user
 USER $USER
