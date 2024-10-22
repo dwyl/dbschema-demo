@@ -1,6 +1,22 @@
 import com.wisecoders.dbs.schema.*
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
 
 try {
+
+    String userHome = System.getProperty("user.home");
+    Path homePath = Paths.get(userHome).resolve("/.DbSchema/drivers/PostgreSQL");
+
+    try (Stream paths = Files.list(homePath)) {
+    paths.filter(Files::isRegularFile).forEach(System.out::println);
+    } catch (IOException e) {
+    e.printStackTrace();
+    }
+
     Project proj = new Project("sample", "SqlServer");
     println "Project " + proj.getName()
 
