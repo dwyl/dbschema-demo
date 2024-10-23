@@ -7,32 +7,33 @@ import java.util.stream.Stream;
 
 
 try {
+    // Make sure to have the PostgreSQL driver
+    com.wisecoders.dbs.cli.command.connectivity.DownloadDriverCommand.downloadDriver("PostgreSQL")
 
-    String userHome = System.getProperty("user.home");
-    Path homePath = Paths.get(userHome).resolve("/.DbSchema/drivers/PostgreSQL");
+    // Create sample project
+    Project project = new Project("sample", "PostgreSQL");
 
-    try (Stream paths = Files.list(homePath)) {
-    paths.filter(Files::isRegularFile).forEach(System.out::println);
-    } catch (IOException e) {
-    e.printStackTrace();
-    }
-
-    Project proj = new Project("sample", "SqlServer");
-    println "Project " + proj.getName()
-
-    Connector con = ConnectorManager.createConnector("pg_con","testdb", "localhost", 5432, "org.postgresql.Driver", "postgres", "postgres")
-    // HERE SPECIFY THE CONNECTION PASSWORD
-    con.setPassword("postgres")
-
-    con.importSchemes( proj, "public")
+    // Create a connection to the PostgreSQL database
+    //Connector con = ConnectorManager.createConnector("pg_con","PostgreSQL", "localhost", 5432, "org.postgresql.Driver", "postgres", "postgres")
+    //String jdbcUrl = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":" + System.getenv("DB_PORT") + "/" + System.getenv("DB_NAME")
+    String jdbcUrl = "jdbc:postgresql://" + System.getenv("DB_HOST") + ":" + System.getenv("DB_PORT") + "/" + System.getenv("DB_NAME")
+    Connector con = ConnectorManager.createConnector(
+        "pg_con",
+        "PostgreSQL",
+        "org.postgresql.Driver",
+        jdbcUrl,
+        "postgres",
+        "postgres"
+    )
+    con.importSchemes( project, "public")
     for( Schema sch : project.schemas ){
         out.println( "Schema " + sch.getNameWithCatalog() )
         for ( Table table : sch.tables ){
             out.println( "  Table " + table.getName() )
         }
     }
-
 } 
+
 // Ensure the script exits with a non-zero status on failure
 catch (Exception e) {
     println "Script failed: ${e.message}"
