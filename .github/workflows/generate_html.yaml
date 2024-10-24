@@ -21,6 +21,9 @@ jobs:
         # Run Docker Compose in detached mode
         sudo docker compose up --build -d --wait --wait-timeout 30
 
+    - name: Wait for app to exit
+      run: ./wait-for-app.sh
+
     - name: Copy Artifacts
       run: |
         # Ensure the output directory exists
