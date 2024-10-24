@@ -6,46 +6,15 @@ jobs:
   dbschema-job:
     runs-on: ubuntu-22.04
 
-    env:
-      PG_USER: postgres
-      PG_PWD: postgres
-      PG_DB_NAME: testdb
-      SQL_SCRIPT_PATH: ./12_tables.sql
-      GROOVY_SCRIPT: example_script.groovy
-
-    services:
-      postgres:
-        image: postgres
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: ${{ env.PG_USER }}
-          POSTGRES_PASSWORD: ${{ env.PG_PWD }}
-          POSTGRES_DB: ${{ env.PG_DB_NAME }}
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up PostgreSQL client
+    - name: Install Docker
       run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends postgresql-client
-
-    - name: Turn on PostgreSQL
-      run: |
-        sudo systemctl start postgresql.service
-        
-    - name: Run SQL script
-      run: psql -h localhost -d ${{ env.PG_DB_NAME }} -U ${{ env.PG_USER }} -f ${{ env.SQL_SCRIPT_PATH }}
-      env:
-        PGPASSWORD: ${{ env.PG_PWD }}
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        sudo systemctl start docker
 
     - name: Install Make
       run: sudo apt-get install -y make
@@ -53,24 +22,22 @@ jobs:
     - name: Run Makefile
       run: make
 
-    - name: Build Docker image for DbSchema
+    - name: Build and Run Docker Compose
       run: |
-        docker build -t dbschema-image:latest .
+        # Run Docker Compose in detached mode
+        sudo docker compose up --build -d
+        # Wait for the app service to exit
+        sudo docker wait $(sudo docker ps -q --filter "name=app")
 
-    - name: Run DbSchema in headless mode
+    - name: Copy Artifacts
       run: |
-        docker run --rm -v $(pwd):/workspace dbschema-image:latest \
-          java -Djava.awt.headless=true \
-               -Dglass.platform=Monocle \
-               -Dmonocle.platform=Headless \
-               -Dprism.order=sw \
-               -Dprism.verbose=true \
-               -Djavafx.platform=monocle \
-               --module-path /opt/javafx-sdk-17.0.2/lib \
-               --add-modules javafx.controls,javafx.base,javafx.graphics,javafx.swing \
-               --add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED \
-               --add-exports javafx.graphics/com.sun.javafx.util=ALL-UNNAMED \
-               --add-exports javafx.graphics/com.sun.javafx.logging=ALL-UNNAMED \
-               --add-exports javafx.base/com.sun.javafx.logging=ALL-UNNAMED \
-               -cp /workspace/app/lib/*:/opt/javafx-sdk-17.0.2/lib/openjfx-monocle-17.0.10.jar \
-               com.wisecoders.dbs.DbSchema -x /workspace/$GROOVY_SCRIPT
+        # Ensure the output directory exists
+        mkdir -p output
+        # Copy generated HTML files from the Docker container to the host
+        sudo docker cp $(sudo docker ps -q --filter "name=app"):home/dbschema/output/. ./output
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dbschema-html-output
+        path: output/*
