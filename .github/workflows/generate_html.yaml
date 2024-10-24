@@ -19,9 +19,7 @@ jobs:
     - name: Build and Run Docker Compose
       run: |
         # Run Docker Compose in detached mode
-        sudo docker compose up --build -d
-        # Wait for the app service to exit
-        sudo docker wait $(sudo docker ps -q --filter "name=app")
+        sudo docker compose up --build -d --wait --wait-timeout 30
 
     - name: Copy Artifacts
       run: |
