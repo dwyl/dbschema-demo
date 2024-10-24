@@ -1,6 +1,8 @@
 # Run `sudo docker compose up --build` to build and start the services
 
 services:
+
+  # PostgreSQL database service
   postgres-db:
     image: postgres:14
     environment:
@@ -20,6 +22,7 @@ services:
     networks:
       - my-network
 
+  # DbSchema service
   app:
     build: .
     depends_on:
