@@ -3,7 +3,7 @@ DOCKERUSER = userino
 
 MAJOR = 9
 MINOR = 6
-PATCH = 2
+PATCH = 3
 
 DBSCHEMA_TAR = dbschema_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz
 DBSCHEMA_URL = https://www.dbschema.com/download/DbSchema_unix_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz
@@ -21,13 +21,9 @@ download:
 extract: $(DBSCHEMA_TAR)
 	tar xvf $(DBSCHEMA_TAR)
 
-# Build the Docker image
-build:
-	docker build -t "$(DOCKERUSER)/dbschema:v$(MAJOR).$(MINOR).$(PATCH)" .
-
 # Clean up downloaded files (optional)
 clean:
 	rm -f $(DBSCHEMA_TAR)
 	rm -rf DbSchema
 
-.PHONY: all download extract build clean
+.PHONY: all download extract clean
