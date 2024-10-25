@@ -1,0 +1,47 @@
+# Run `sudo docker compose up --build` to build and start the services
+
+services:
+
+  # PostgreSQL database service
+  postgres-db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "psql -h localhost -p 5432 -U postgres -d postgres -c '\\q'"] # Check if the database is ready
+      interval: 3s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./12_tables.sql:/docker-entrypoint-initdb.d/12_tables.sql
+    networks:
+      - my-network
+
+  # DbSchema service
+  app:
+    build: .
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - my-network
+    environment:
+      DB_HOST: postgres-db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      DB_PORT: 5432
+      OUTPUT_PATH: /tmp/output
+    volumes:
+      - ./output:/tmp/output # Mount the output directory.
+
+volumes:
+  postgres-data:
+
+networks:
+  my-network:
