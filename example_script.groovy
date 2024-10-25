@@ -87,10 +87,17 @@ try {
     layout.autoArrange()
 
     // Export HTML5 documentation
-    def output = System.getenv("OUTPUT_PATH") + "/erd_" + dbSchema.toLowerCase() + ".html" 
-    htmlFile = new File(output)
+    def outputDir = new File(System.getenv("OUTPUT_PATH"))
+    def outputFile = outputDir.getPath() + "/erd_" + dbSchema.toLowerCase() + ".html"
 
-    println "general html file: ${output}"
+    // Create the output directory in case it doesn't exist
+    if (!outputDir.exists()) {
+        outputDir.mkdirs()
+    }
+
+    htmlFile = new File(outputFile)
+
+    println "general html file: ${outputFile}"
     layout.generateHtmlDocumentation( htmlFile, [layout] )
 
 } 
