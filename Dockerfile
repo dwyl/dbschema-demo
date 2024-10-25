@@ -29,10 +29,13 @@ RUN chown -R "$USER:$USER" "$HOME/app"
 RUN chown -R dbschema:dbschema /home/dbschema
 
 # Add output folder (must be as the `OUTPUT_PATH` in the `docker-compose.yml`)
-RUN mkdir -p /home/dbschema/output && chown dbschema:dbschema /home/dbschema/output
+RUN mkdir -p /home/dbschema/output && chown dbschema:dbschema /home/dbschema/
 
 # Switch to non-root user
 USER $USER
+
+# Adding permissions to `OUTPUT_PATH`
+RUN chmod o+x /home/dbschema/
 
 # Set the working directory
 WORKDIR $HOME
