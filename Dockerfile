@@ -28,10 +28,7 @@ RUN chown -R "$USER:$USER" "$HOME/app"
 # Set correct ownership for the dbschema user
 RUN chown -R dbschema:dbschema /home/dbschema
 
-RUN mkdir -p /tmp/html5_docs_output && chmod 777 /tmp/html5_docs_output && chown dbschema:dbschema /tmp/html5_docs_output
-
-# Switch to non-root user
-#USER $USER
+RUN mkdir -p /tmp/output && chmod 777 /tmp/output
 
 # Set the working directory
 WORKDIR $HOME
