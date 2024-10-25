@@ -36,9 +36,9 @@ services:
       DB_PASSWORD: postgres
       DB_NAME: postgres
       DB_PORT: 5432
-      OUTPUT_PATH: /home/dbschema/output
+      OUTPUT_PATH: /tmp/html5_docs_output
     volumes:
-      - ./output:/home/dbschema/output # Mount the output directory.
+      - ./output:/tmp/html5_docs_output # Mount the output directory.
 
 volumes:
   postgres-data:
