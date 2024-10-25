@@ -26,7 +26,7 @@ def backgroundColorMap = [
 ]
 
 def foregroundColorMap = [
-        "dim" :"#96c8f4", 
+        "dim" :"#96c8f4",
         "fact" :"#fddf69",
 ]
 
@@ -61,7 +61,7 @@ try {
     // See https://dbschema.com/documentation/layouts.html for more information,
     for (Table table: schema.tables){
 
-        // We expect all table name to have a "dim_" or "fact_" prefix...
+        // We expect all table name to have a "dim_" or "fact_" prefix
         String tableType = table.getName().split('_')[0]
         table.setComment("COMMENT ON TABLE ${table.getName()}")
         bgColor = backgroundColorMap.get(tableType)
@@ -73,12 +73,13 @@ try {
             println "Add layout group for domain ${tableType}"
         }
 
-        grp = grps.get(tableType)
-
+        // Create depict for the table
         Depict depict = layout.attach( table )
         depict.setComment("COMMENT STRING")
-
         //depict.hideColumnsIfDepictIsLarge()
+
+        // Get the group and attach the depict to the group and setting its color
+        grp = grps.get(tableType)
 
         grp.attachDepict( depict )
         grp.setColor(Color.web(bgColor))
@@ -95,18 +96,16 @@ try {
         outputDir.mkdirs()
     }
 
-    htmlFile = new File(outputFile)
-
     println "general html file: ${outputFile}"
+    htmlFile = new File(outputFile)
     layout.generateHtmlDocumentation( htmlFile, [layout] )
-
-} 
+}
 
 // Ensure the script exits with a non-zero status on failure
 catch (Exception e) {
     println "Script failed: ${e.message}"
     e.printStackTrace()
-    System.exit(1)  
+    System.exit(1)
 }
 
 // Explicitly exit with 0 if the script succeeds

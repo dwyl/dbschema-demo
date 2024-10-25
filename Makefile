@@ -11,13 +11,13 @@ DBSCHEMA_URL = https://www.dbschema.com/download/DbSchema_unix_$(MAJOR)_$(MINOR)
 # Default target
 all: download extract
 
-# Download thesudo make DbSchema tar.gz file if it doesn't exist
+# Download the DbSchema `tar.gz` file if it doesn't exist
 download:
 	if [ ! -f $(DBSCHEMA_TAR) ]; then \
 		curl -L $(DBSCHEMA_URL) --output $(DBSCHEMA_TAR); \
 	fi
 
-# Extract the downloaded tar.gz file
+# Extract the downloaded `tar.gz` file
 extract: $(DBSCHEMA_TAR)
 	tar xvf $(DBSCHEMA_TAR)
 
