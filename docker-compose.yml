@@ -25,6 +25,7 @@ services:
   # DbSchema service
   app:
     build: .
+    privileged: true
     depends_on:
       postgres-db:
         condition: service_healthy
