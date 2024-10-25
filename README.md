@@ -23,7 +23,6 @@ and generate [ERD](https://miro.com/diagramming/what-is-an-er-diagram/) diagrams
       - [6. Creating a `Github Actions` workflow and generating artifact](#6-creating-a-github-actions-workflow-and-generating-artifact)
 - [Star this repo ⭐️](#star-this-repo-️)
 
-
 ## What? 💭
 
 Visualizing the schema of a database is _essential_ for understanding its structure and relationships.
@@ -78,16 +77,14 @@ You can _optionally_ install [**`DBeaver`**](https://dbeaver.io/),
 which will help you manage your databases and execute SQL queries
 much easier.
 
-
 ### Local schema visualization
 
 We'll first focus on running `DbSchema`
 and generating the HTML5 documentation of a sample database
-*locally*.
+_locally_.
 
 Afterwards,
 we'll focus on running `DbSchema` headless.
-
 
 #### 1. Download and install `DbSchema`
 
@@ -95,7 +92,7 @@ Let's start by downloading and installing `DbSchema`.
 Go to https://dbschema.com/download.html
 and download and install `DbSchema`.
 
-Don't worry, 
+Don't worry,
 you don't need a license to follow this tutorial.
 We will use the free version of `DbSchema`.
 To unlock pro features,
@@ -116,7 +113,6 @@ you have successfully installed `DbSchema`!
 >
 > At the time of writing,
 > we're using `DbSchema` version 9.6.2.
-
 
 #### 2. Create database and create tables
 
@@ -202,7 +198,6 @@ You will see the tables in a diagram.
   <img width="800" src="https://github.com/user-attachments/assets/e71482ca-0b6c-4404-bb64-b4d879f602ab" />
 </p>
 
-
 #### 4. Exporting HTML5 documentation
 
 To export an HTML5 page,
@@ -259,7 +254,7 @@ we are going to make use of `Docker` to run the installer
 and run it in a `Linux`-based system inside a container.
 
 Let's first automate the downloading of the installer.
-We are going to create a [`Makefile`](https://opensource.com/article/18/8/what-how-makefile) 
+We are going to create a [`Makefile`](https://opensource.com/article/18/8/what-how-makefile)
 to help us do this.
 Create a file called `Makefile` and use the following content:
 
@@ -296,13 +291,14 @@ clean:
 ```
 
 We are defining a few variables first that are going to be used:
-- `DOCKERUSER = userino`: 
+
+- `DOCKERUSER = userino`:
   Defines the Docker user.
-- `MAJOR = 9`, `MINOR = 6`, `PATCH = 3:` 
+- `MAJOR = 9`, `MINOR = 6`, `PATCH = 3:`
   Defines version numbers for DbSchema.
-- `DBSCHEMA_TAR = dbschema_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz`: 
+- `DBSCHEMA_TAR = dbschema_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz`:
   Constructs the `tar` file name using the version numbers.
-- `DBSCHEMA_URL = https://www.dbschema.com/download/DbSchema_unix_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz`: 
+- `DBSCHEMA_URL = https://www.dbschema.com/download/DbSchema_unix_$(MAJOR)_$(MINOR)_$(PATCH).tar.gz`:
   Constructs the download URL using the version numbers.
   It uses the download URL for Unix-based systems
   that was mentioned before.
@@ -318,7 +314,7 @@ We've also defined a `clean` target that removes the downloaded files.
 Here how the flow looks like
 when you run the command `make`.
 
-- When `make` is run, 
+- When `make` is run,
   it triggers the `all` target.
 - The `all` target depends on `download` and `extract`.
 - The `download` target checks for the existence of the tar file and downloads it if it doesn't exist.
@@ -328,7 +324,6 @@ when you run the command `make`.
 With this,
 we can always download and extract the latest version of `DbSchema`
 by just running `make`! 🎉
-
 
 #### 2. Creating the `monocle.jar` file
 
@@ -343,11 +338,11 @@ we need to build it in the correct Java `JDK` version,
 which in our case, it's `JDK 17`.
 
 - head over to https://github.com/TestFX/Monocle
-and follow the instructions 
-and *build the `monocle.jar`* file
-for `JDK 17`.
+  and follow the instructions
+  and _build the `monocle.jar`_ file
+  for `JDK 17`.
 - download the `monocle.jar` file from `Maven` repository
-in https://central.sonatype.com/artifact/org.testfx/openjfx-monocle/17.0.10.
+  in https://central.sonatype.com/artifact/org.testfx/openjfx-monocle/17.0.10.
 
 In our case,
 we went with the first option
@@ -361,7 +356,6 @@ This is because, according to the
 [`DbSchema` documentation](https://dbschema.com/documentation/dbschemacli.html#docker),
 we need to place it in the `lib` directory of `DbSchema` installer files
 (after extraction).
-
 
 #### 3. Defining our `Docker` container
 
@@ -426,12 +420,12 @@ Let's break down what's happening in the `Dockerfile`:
 - We specify the base image as `Ubuntu 22.04` for the `AMD64 architecture`.
   This is better for compatibility with `DbSchema`.
   It then updates the package list and installs `JDK 17`, `OpenJFX`, and other necessary dependencies such as `wget`, `unzip`, and `PostgreSQL` client.
-  These dependencies *are crucial* for running `DbSchema` headlessly
+  These dependencies _are crucial_ for running `DbSchema` headlessly
   and to run the rest of the commands ahead!
   Because `DbSchema` implements `JDK v17` and `OpenJFX` for its GUI,
   we need to install these dependencies to run it headlessly.
 
-- Next, it downloads the `JavaFX` SDK compatible with `JDK 17` and 
+- Next, it downloads the `JavaFX` SDK compatible with `JDK 17` and
   extracts it to the `/opt directory`.
   `JavaFX` is used by `DbSchema` and it fails if we don't install it and define the environment variables correctly,
   hence why setting up the `PATH_TO_FX` env variable.
@@ -444,8 +438,8 @@ Let's break down what's happening in the `Dockerfile`:
   as defined in `DbSchema`'s documentation.
 
 - The working directory is set to `/home/dbschema`.
-  Afterwards, `DbSchema` installer files, `Monocle` jar file, 
-  and an example `Groovy` script are copied to the container. 
+  Afterwards, `DbSchema` installer files, `Monocle` jar file,
+  and an example `Groovy` script are copied to the container.
   This `Groovy` script is what we are going to automate tasks
   and interact with `DbSchema` without having to use the GUI.
   You can find more information in https://dbschema.com/documentation/automation-api.html.
@@ -455,9 +449,9 @@ Let's break down what's happening in the `Dockerfile`:
   For example, if `DbSchema` running the `Groovy` script fails,
   the shell script fails too.
   This is important in the context of `Github Actions`,
-  where we want to know if the process failed or not. 
+  where we want to know if the process failed or not.
 
-- Finally, 
+- Finally,
   the created shell script is set as the entry point for the container.
 
 > [!NOTE]
@@ -467,7 +461,6 @@ Let's break down what's happening in the `Dockerfile`:
 > it was causing permission issues when generating files when executing the script.
 >
 > Therefore, we are running the `DbSchema` Java process as `root`.
-
 
 Awesome! 🎉
 
@@ -486,8 +479,8 @@ This container will run `DbSchema`,
 which in turn,
 will run a `Groovy` script that will generate the HTML5 documentation of the database.
 
-`DbSchema` *will need to connect to a PostgreSQL database* inside the `Groovy` script.
-Therefore, we will need to define *another `Docker` container* that runs a `PostgreSQL` database.
+`DbSchema` _will need to connect to a PostgreSQL database_ inside the `Groovy` script.
+Therefore, we will need to define _another `Docker` container_ that runs a `PostgreSQL` database.
 
 Create a `docker-compose.yml` file with the following content:
 
@@ -495,7 +488,6 @@ Create a `docker-compose.yml` file with the following content:
 # Run `sudo docker compose up --build` to build and start the services
 
 services:
-
   # PostgreSQL database service
   postgres-db:
     image: postgres:14
@@ -545,11 +537,12 @@ Let's break this down:
 
 - in the **`postgres-db`** service,
   we are defining the `PostgreSQL` database container.
+
   - It uses the `PostgreSQL 14` image.
   - We define the database, user and password as environment variables.
   - We expose the `5432` port, which is the default `PostgreSQL` port.
   - We define a health check to ensure the database is ready.
-    This health check will be used by the other service (running the `Dockerfile` image we've created earlier) 
+    This health check will be used by the other service (running the `Dockerfile` image we've created earlier)
     to ensure the database is ready before running the `DbSchema` script.
     For this, we use the `psql` command to check if we can connect to the database.
   - We mount the `postgres-data` volume to persist the database data.
@@ -560,13 +553,14 @@ Let's break this down:
 
 - in the **`app`** service,
   we run the `Dockerfile` image we've defined earlier.
+
   - We define a dependency on the `postgres-db` service.
     This dependency ensures that the `DbSchema` service only starts when the `PostgreSQL` database is ready.
   - We define the environment variables that the `DbSchema` script will use to connect to the database.
     These env variables will be used in the `Groovy` script.
   - We mount the `output` directory to `/tmp/output` inside the container.
-    This will create an `output` directory *on our local machine*
-    that contains everything that is inside the `/tmp/output` directory *inside the container*.
+    This will create an `output` directory _on our local machine_
+    that contains everything that is inside the `/tmp/output` directory _inside the container_.
     Within the container,
     we will generate the HTML5 documentation page inside `/tmp/output`.
 
@@ -587,7 +581,6 @@ to see the generated HTML5 documentation page!
 
 All that's left now is to create the `Groovy` script.
 Let's crack on with that! 🏃‍♂️
-
 
 #### 5. Creating our `Groovy` script
 
@@ -617,7 +610,7 @@ and peruse the scripts available.
 </p>
 
 For this tutorial,
-we are going to create a script that will generate 
+we are going to create a script that will generate
 [an HTML5 documentation page](https://dbschema.com/documentation/schema-documentation.html).
 This page will have a diagram with all the tables of the database,
 where we can customize this layout fully.
@@ -744,7 +737,7 @@ System.exit(0)
 > We recommend you read the [`DbSchema API`](https://dbschema.com/documentation/automation-api.html)
 > in tandem with this script to understand what each method does.
 
-This script connects to a `PostgreSQL` database and generates an *ERD (Entity-Relationship Diagram)* 
+This script connects to a `PostgreSQL` database and generates an _ERD (Entity-Relationship Diagram)_
 with color-coded tables based on their prefixes.
 If we check `12_tables.sql` file,
 we can see that the tables have prefixes `dim_` and `fact_`,
@@ -753,32 +746,31 @@ for [dimension and facts tables](https://www.databricks.com/glossary/star-schema
 Before starting, we import necessary libraries
 and **define connection parameters using environment variables**
 for the database.
-We initialize the needed parameters to *connect to the database*,
+We initialize the needed parameters to _connect to the database_,
 including `alias`, the `dbmsName` (which must be the same as defined by `DbSchema`),
 the `driver` used,
 the `jdbcUrl` to connect to the database,
 the database `username` and `password`.
-Additionally, some color maps are defined for table prefixes. 
+Additionally, some color maps are defined for table prefixes.
 
 - The script starts by downloading the `PostgreSQL` driver if it's not already available.
-- A new project is created, 
-  and a connection to the `PostgreSQL` database is established using the provided connection parameters. 
+- A new project is created,
+  and a connection to the `PostgreSQL` database is established using the provided connection parameters.
 - After, we import the `"public"` schema from the database and create a layout for the ERD.
-- We iterate over the tables in the schema, 
-  assigning colors and comments based on their prefixes, 
+- We iterate over the tables in the schema,
+  assigning colors and comments based on their prefixes,
   and group them accordingly.
-- the layout is then auto-arranged, 
-  and `HTML5` documentation is generated and saved to a specified '`output`' directory. 
+- the layout is then auto-arranged,
+  and `HTML5` documentation is generated and saved to a specified '`output`' directory.
 
-If any errors occur during the process, 
-the script catches the exception, 
-prints an error message, 
-and exits with a non-zero status. 
+If any errors occur during the process,
+the script catches the exception,
+prints an error message,
+and exits with a non-zero status.
 If the script completes successfully, it exits with a status of `0`.
 
 We make use of the environment variables defined in the `docker-compose.yml` file
 to create the connection and output paths.
-
 
 #### 6. Creating a `Github Actions` workflow and generating artifact
 
@@ -800,31 +792,32 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install Make
-      run: sudo apt-get install -y make
+      - name: Install Make
+        run: sudo apt-get install -y make
 
-    - name: Run Makefile
-      run: make
+      - name: Run Makefile
+        run: make
 
-    - name: Build and Run Docker Compose
-      run: |
-        # Run Docker Compose in detached mode
-        sudo docker compose up --build --exit-code-from app
+      - name: Build and Run Docker Compose
+        run: |
+          # Run Docker Compose in detached mode
+          sudo docker compose up --build --exit-code-from app
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: dbschema-html-output
-        path: output/*
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dbschema-html-output
+          path: output/*
 ```
 
 As you can see, it's really simple!
 We've done all the work inside the `Docker` containers
 in conjunction with the `docker-compose.yml` file.
 The `Github Actions` workflow file is just a few steps:
+
 - checking out the code.
 - installing `Make`.
 - running the `Makefile` to download and extract the `DbSchema` installer.
