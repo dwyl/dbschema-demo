@@ -31,7 +31,7 @@ RUN chown -R dbschema:dbschema /home/dbschema
 RUN mkdir -p /tmp/html5_docs_output && chmod 777 /tmp/html5_docs_output && chown dbschema:dbschema /tmp/html5_docs_output
 
 # Switch to non-root user
-USER $USER
+#USER $USER
 
 # Set the working directory
 WORKDIR $HOME
