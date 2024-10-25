@@ -792,25 +792,26 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install Make
-        run: sudo apt-get install -y make
+    - name: Install Make
+      run: sudo apt-get install -y make
 
-      - name: Run Makefile
-        run: make
+    - name: Run Makefile
+      run: make
 
-      - name: Build and Run Docker Compose
-        run: |
-          # Run Docker Compose in detached mode
-          sudo docker compose up --build --exit-code-from app
+    - name: Build and Run Docker Compose
+      run: |
+        # Run Docker Compose in detached mode
+        sudo docker compose up --build --exit-code-from app
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: dbschema-html-output
-          path: output/*
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dbschema-html-output
+        path: output/*
+
 ```
 
 As you can see, it's really simple!
