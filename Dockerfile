@@ -28,6 +28,9 @@ RUN chown -R "$USER:$USER" "$HOME/app"
 # Set correct ownership for the dbschema user
 RUN chown -R dbschema:dbschema /home/dbschema
 
+# Add output folder (must be as the `OUTPUT_PATH` in the `docker-compose.yml`)
+RUN mkdir -p /home/dbschema/output && chown dbschema:dbschema /home/dbschema/output
+
 # Switch to non-root user
 USER $USER
 
