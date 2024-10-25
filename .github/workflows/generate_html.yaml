@@ -21,13 +21,6 @@ jobs:
         # Run Docker Compose in detached mode
         sudo docker compose up --build --exit-code-from app
 
-    - name: Copy Artifacts
-      run: |
-        # Ensure the output directory exists
-        mkdir -p output
-        # Copy generated HTML files from the Docker container to the host
-        sudo docker cp $(sudo docker ps -q --filter "name=app"):home/dbschema/output/. ./output
-
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
