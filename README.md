@@ -2,11 +2,11 @@
 
 ![dbschema-demo-intro-hero-image](https://github.com/user-attachments/assets/b9a67918-cef8-4180-a36b-f4e6a5971c9e)
 
-A small demo project showing how to use `dbschema`
-to explore the schema of a `Postgres` database
+A quick demo showing how to use `dbschema`
+to explore the schema of a `Postgres` database <br />
 and generate an
 [Entity Relationship Diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model)
-(ERD).
+(ERD) via `GitHub` Actions.
 
 </div>
 
@@ -52,7 +52,7 @@ See the many other features of `DbSchema` at:
 
 ## Why? 🤷‍♀️
 
-One of the many features `DbSchem` provides
+One of the many features `DbSchema` provides
 is **the ability to generate `HTML5` documentation for your database**.
 
 Exporting **interactive `HTML5` documentation** of your database
@@ -89,9 +89,11 @@ _Optionally_ install
 [**`DBeaver`**](https://dbeaver.io/),
 to help manage your databases
 and execute `SQL` queries easier.
-> **Note**: a `DBeaver` intro/tutorial
-> is beyond the scope of this demo;
-For that, `YouTube` is your friend:
+
+> [!NOTE]
+> a `DBeaver` intro/tutorial
+> is beyond the scope of this demo; <br />
+for that, `YouTube` is your friend:
 [youtube.com/DBeaver+Tutorial](https://www.youtube.com/results?search_query=DBeaver+Tutorial)
 
 ### _Local_ Schema Visualization
