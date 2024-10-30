@@ -84,7 +84,7 @@ CREATE TABLE dim_channel (
 
 -- Fact Table: Account
 CREATE TABLE fact_account (
-    account_fact_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     account_id INT NOT NULL,
     customer_id INT NOT NULL,
     branch_id INT,
@@ -102,7 +102,7 @@ CREATE TABLE fact_account (
 
 -- Fact Table: Transaction
 CREATE TABLE fact_transaction (
-    transaction_fact_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     transaction_id INT NOT NULL,
     account_id INT NOT NULL,
     transaction_type_id INT,
@@ -112,6 +112,7 @@ CREATE TABLE fact_transaction (
     location_id INT,
     employee_id INT,
     channel_id INT,
+    FOREIGN KEY (account_id) REFERENCES dim_account(account_id),
     FOREIGN KEY (transaction_type_id) REFERENCES dim_transaction_type(transaction_type_id),
     FOREIGN KEY (currency_id) REFERENCES dim_currency(currency_id),
     FOREIGN KEY (transaction_date_id) REFERENCES dim_date(date_id),
@@ -119,8 +120,3 @@ CREATE TABLE fact_transaction (
     FOREIGN KEY (employee_id) REFERENCES dim_employee(employee_id),
     FOREIGN KEY (channel_id) REFERENCES dim_channel(channel_id)
 );
-
-
--- Adding `account_id` foreign key to `transaction_facts` to link with `account_facts`
-ALTER TABLE fact_transaction
-ADD CONSTRAINT fk_account_id FOREIGN KEY (account_id) REFERENCES fact_account(account_id);
