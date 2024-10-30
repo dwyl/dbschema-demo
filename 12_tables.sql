@@ -1,41 +1,3 @@
--- Fact Table: Account
-CREATE TABLE fact_account (
-    account_fact_id SERIAL PRIMARY KEY,
-    account_id INT NOT NULL,
-    customer_id INT NOT NULL,
-    branch_id INT,
-    product_id INT,
-    balance DECIMAL(18, 2),
-    open_date_id INT,
-    close_date_id INT,
-    FOREIGN KEY (account_id) REFERENCES dim_account(account_id),
-    FOREIGN KEY (customer_id) REFERENCES dim_customer(customer_id),
-    FOREIGN KEY (branch_id) REFERENCES dim_branch(branch_id),
-    FOREIGN KEY (product_id) REFERENCES dim_product(product_id),
-    FOREIGN KEY (open_date_id) REFERENCES dim_date(date_id),
-    FOREIGN KEY (close_date_id) REFERENCES dim_date(date_id)
-);
-
--- Fact Table: Transaction
-CREATE TABLE fact_transaction (
-    transaction_fact_id SERIAL PRIMARY KEY,
-    transaction_id INT NOT NULL,
-    account_id INT NOT NULL,
-    transaction_type_id INT,
-    amount DECIMAL(18, 2),
-    currency_id INT,
-    transaction_date_id INT,
-    location_id INT,
-    employee_id INT,
-    channel_id INT,
-    FOREIGN KEY (transaction_type_id) REFERENCES dim_transaction_type(transaction_type_id),
-    FOREIGN KEY (currency_id) REFERENCES dim_currency(currency_id),
-    FOREIGN KEY (transaction_date_id) REFERENCES dim_date(date_id),
-    FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
-    FOREIGN KEY (employee_id) REFERENCES dim_employee(employee_id),
-    FOREIGN KEY (channel_id) REFERENCES dim_channel(channel_id)
-);
-
 -- Dimension Table: Account
 CREATE TABLE dim_account (
     account_id SERIAL PRIMARY KEY,
@@ -119,6 +81,45 @@ CREATE TABLE dim_channel (
     channel_name VARCHAR(50),
     description VARCHAR(255)
 );
+
+-- Fact Table: Account
+CREATE TABLE fact_account (
+    account_fact_id SERIAL PRIMARY KEY,
+    account_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    branch_id INT,
+    product_id INT,
+    balance DECIMAL(18, 2),
+    open_date_id INT,
+    close_date_id INT,
+    FOREIGN KEY (account_id) REFERENCES dim_account(account_id),
+    FOREIGN KEY (customer_id) REFERENCES dim_customer(customer_id),
+    FOREIGN KEY (branch_id) REFERENCES dim_branch(branch_id),
+    FOREIGN KEY (product_id) REFERENCES dim_product(product_id),
+    FOREIGN KEY (open_date_id) REFERENCES dim_date(date_id),
+    FOREIGN KEY (close_date_id) REFERENCES dim_date(date_id)
+);
+
+-- Fact Table: Transaction
+CREATE TABLE fact_transaction (
+    transaction_fact_id SERIAL PRIMARY KEY,
+    transaction_id INT NOT NULL,
+    account_id INT NOT NULL,
+    transaction_type_id INT,
+    amount DECIMAL(18, 2),
+    currency_id INT,
+    transaction_date_id INT,
+    location_id INT,
+    employee_id INT,
+    channel_id INT,
+    FOREIGN KEY (transaction_type_id) REFERENCES dim_transaction_type(transaction_type_id),
+    FOREIGN KEY (currency_id) REFERENCES dim_currency(currency_id),
+    FOREIGN KEY (transaction_date_id) REFERENCES dim_date(date_id),
+    FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
+    FOREIGN KEY (employee_id) REFERENCES dim_employee(employee_id),
+    FOREIGN KEY (channel_id) REFERENCES dim_channel(channel_id)
+);
+
 
 -- Adding `account_id` foreign key to `transaction_facts` to link with `account_facts`
 ALTER TABLE fact_transaction
