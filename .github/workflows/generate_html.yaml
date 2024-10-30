@@ -1,0 +1,28 @@
+name: DbSchema Workflow
+
+on: [push]
+
+jobs:
+  dbschema-job:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Make
+      run: sudo apt-get install -y make
+
+    - name: Run Makefile
+      run: make
+
+    - name: Build and Run Docker Compose
+      run: |
+        # Run Docker Compose in detached mode
+        sudo docker compose up --build --exit-code-from app
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dbschema-html-output
+        path: output/*
