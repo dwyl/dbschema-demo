@@ -215,7 +215,7 @@ And you're in!
 You will see the tables in a diagram.
 
 <p align="center">
-  <img width="800" src="https://github.com/user-attachments/assets/e71482ca-0b6c-4404-bb64-b4d879f602ab" />
+  <img width="800" src="https://github.com/user-attachments/assets/85a9edd7-40a0-4137-af52-0b5779ce0daf" />
 </p>
 
 #### 4. Exporting HTML5 documentation
